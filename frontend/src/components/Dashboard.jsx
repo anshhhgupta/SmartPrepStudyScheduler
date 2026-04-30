@@ -189,9 +189,29 @@ const AlgoInfoPanel = ({ schedule }) => {
 };
 
 export const Dashboard = () => {
-  const { subjects, schedule, risk, loading, runScheduler, algoLog, dpLog, greedyLog, backendOnline } = useApp();
+  const { subjects, schedule, risk, loading, runScheduler, algoLog, dpLog, greedyLog, backendOnline, user, saveUser } = useApp();
   const [ran, setRan] = useState(false);
   const [error, setError] = useState('');
+  const [limitInput, setLimitInput] = useState('');
+  const [limitSaving, setLimitSaving] = useState(false);
+  const [limitMsg, setLimitMsg] = useState('');
+
+  const handleLimitSave = async () => {
+    const val = parseInt(limitInput, 10);
+    if (!val || val < 1 || val > 24) { setLimitMsg('Enter a value between 1 and 24'); return; }
+    setLimitSaving(true);
+    setLimitMsg('');
+    try {
+      await saveUser({ name: user.name, daily_limit: val });
+      setLimitMsg('Saved!');
+      setLimitInput('');
+      setTimeout(() => setLimitMsg(''), 2000);
+    } catch {
+      setLimitMsg('Failed to save');
+    } finally {
+      setLimitSaving(false);
+    }
+  };
 
   const handleRun = async () => {
     setError('');
@@ -246,6 +266,24 @@ export const Dashboard = () => {
               : '⚠️ Backend offline — start the Flask server to enable live scheduling.'
           }</p>
           {error && <p style={{ color: 'var(--danger)', marginTop: 4, fontSize: '0.85rem' }}>⚠️ {error}</p>}
+          <div className="daily-limit-row">
+            <Clock size={14} style={{ color: 'var(--text-secondary)' }} />
+            <span className="daily-limit-label">Daily limit: <strong style={{ color: 'var(--accent-primary)' }}>{user.daily_limit}h</strong></span>
+            <input
+              className="daily-limit-input"
+              type="number"
+              min={1}
+              max={24}
+              placeholder="New limit"
+              value={limitInput}
+              onChange={e => setLimitInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleLimitSave()}
+            />
+            <button className="daily-limit-btn" onClick={handleLimitSave} disabled={limitSaving || !backendOnline}>
+              {limitSaving ? '...' : 'Set'}
+            </button>
+            {limitMsg && <span style={{ fontSize: '0.75rem', color: limitMsg === 'Saved!' ? 'var(--success)' : 'var(--danger)' }}>{limitMsg}</span>}
+          </div>
         </div>
         <motion.button
           className={`run-algo-btn ${loading ? 'running' : ''} animate-pulse-glow`}

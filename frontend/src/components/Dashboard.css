@@ -239,3 +239,56 @@
   font-size: 0.75rem;
   white-space: nowrap;
 }
+
+/* ── Daily Limit Row ─────────────────────────────────────────────────────── */
+.daily-limit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.daily-limit-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.daily-limit-input {
+  width: 80px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.06);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.daily-limit-input:focus {
+  border-color: var(--accent-primary);
+}
+
+.daily-limit-btn {
+  padding: 5px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(139,92,246,0.4);
+  background: rgba(139,92,246,0.15);
+  color: var(--accent-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.daily-limit-btn:hover:not(:disabled) {
+  background: rgba(139,92,246,0.3);
+}
+
+.daily-limit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
